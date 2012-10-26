@@ -1,0 +1,78 @@
+<html>
+<head>
+<script type='text/javascript' src='jquery.js'></script>
+<script type='text/javascript' src='uptimeApi.js'></script>
+<script type="text/JavaScript">
+
+var uptime_host = 'win-dleith.rd.local';
+var uptime_user = 'admin';
+var uptime_pass = 'admin';
+var uptime_port = 9997;
+var uptime_ver = 'v1';
+var uptime_ssl = true;
+
+uptime_api = new uptimeApi(uptime_user, uptime_pass, uptime_host, uptime_port, uptime_ver, uptime_ssl);
+
+
+uptime_api.getApiInfo(function(apiInfo){
+	$("div#content").append("<h2>API Info</h2>");
+	$("div#content").append("<li class=hostname>"+apiInfo.databaseHost+"</li>");
+	$("div#content").append("<li class=hostname>"+apiInfo.databaseName+"</li>");
+	$("div#content").append("<li class=hostname>"+apiInfo.databaseVersion+"</li>");
+	$("div#content").append("<li class=hostname>"+apiInfo.version+"</li>");
+	console.log(apiInfo);
+});
+
+uptime_api.getElements("isMonitored=true", function(allElements) {
+	console.log(allElements);
+	$("div#content").append("<h2>All Elements</h2>");
+	$("div#content").append("<ul>");
+	$.each(allElements, function(index,element) {
+		$("div#content").append("<li class=hostname id="+element.id+">"+element.hostname+"</li>");
+	});
+	$("div#content").append("</ul>");
+});
+uptime_api.getMonitors("", function(allMonitors) {
+	console.log(allMonitors);
+	$("div#content").append("<h2>All Monitors</h2>");
+	$("div#content").append("<ul>");
+	$.each(allMonitors, function(index,monitor) {
+		$("div#content").append("<li class=hostname id="+monitor.id+">"+monitor.name+"</li>");
+	});
+	$("div#content").append("</ul>");
+});
+uptime_api.getGroups("", function(allGroups) {
+	console.log(allGroups);
+	$("div#content").append("<h2>All Groups</h2>");
+	$("div#content").append("<ul>");
+	$.each(allGroups, function(index,group) {
+		$("div#content").append("<li class=groupname id="+group.id+">"+group.name+"</li>");
+	});
+	$("div#content").append("</ul>");
+});
+
+uptime_api.getElementStatus(1,function(elementStatus) {
+	console.log(elementStatus);
+	$("div#content").append("<h2>Element Status</h2>");
+	$("div#content").append("<li class=hostname id="+elementStatus.id+">"+elementStatus.name+"</li>");
+});
+uptime_api.getMonitorStatus(1,function(monitorStatus) {
+	console.log(monitorStatus);
+	$("div#content").append("<h2>Monitor Status</h2>");
+	$("div#content").append("<li class=monitorname id="+monitorStatus.id+">"+monitorStatus.name+" ("+monitorStatus.status+") Since: "+monitorStatus.lastTransitionTime+"</li>");
+});
+uptime_api.getGroupStatus(1,function(groupStatus) {
+	console.log(groupStatus);
+	$("div#content").append("<h2>Group Status</h2>");
+	$("div#content").append("<li class=groupname id="+groupStatus.id+">"+groupStatus.name+"</li>");
+});
+
+
+</script>
+</head>
+<body>
+
+<div id="content"></div>
+
+</body>
+</html>
